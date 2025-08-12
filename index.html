@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Random Compliment Generator ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(-10px) rotate(-1deg); }
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            z-index: 10;
+            position: relative;
+        }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 40px;
+            box-shadow: 
+                0 30px 80px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            padding: 80px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff);
+            background-size: 300% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Floating decorative elements */
+        .floating-element {
+            position: absolute;
+            font-size: 30px;
+            opacity: 0.15;
+            animation: floatElements 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .floating-element:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+        .floating-element:nth-child(2) { top: 15%; right: 10%; animation-delay: 1s; }
+        .floating-element:nth-child(3) { bottom: 15%; left: 10%; animation-delay: 2s; }
+        .floating-element:nth-child(4) { bottom: 15%; right: 10%; animation-delay: 3s; }
+        .floating-element:nth-child(5) { top: 50%; left: 5%; animation-delay: 4s; }
+        .floating-element:nth-child(6) { top: 50%; right: 5%; animation-delay: 5s; }
+
+        @keyframes floatElements {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            25% { transform: translateY(-15px) rotate(5deg) scale(1.1); }
+            50% { transform: translateY(-10px) rotate(-5deg) scale(0.9); }
+            75% { transform: translateY(-20px) rotate(3deg) scale(1.05); }
+        }
+
+        .header {
+            margin-bottom: 60px;
+        }
+
+        .main-title {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            color: #6b7280;
+            font-weight: 400;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: #9ca3af;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .compliment-section {
+            margin: 70px 0;
+            position: relative;
+        }
+
+        .compliment-display {
+            min-height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .compliment-display::before {
+            content: '"';
+            position: absolute;
+            top: 15px;
+            left: 25px;
+            font-size: 4rem;
+            color: #e2e8f0;
+            font-family: serif;
+            line-height: 1;
+        }
+
+        .compliment-display::after {
+            content: '"';
+            position: absolute;
+            bottom: 15px;
+            right: 25px;
+            font-size: 4rem;
+            color: #e2e8f0;
+            font-family: serif;
+            line-height: 1;
+        }
+
+        .compliment-text {
+            font-size: 1.5rem;
+            color: #1f2937;
+            line-height: 1.7;
+            font-weight: 500;
+            max-width: 700px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .compliment-text.fade-out {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+
+        .compliment-text.fade-in {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .button-section {
+            margin: 50px 0;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 25px 50px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-radius: 60px;
+            cursor: pointer;
+            box-shadow: 
+                0 15px 35px rgba(102, 126, 234, 0.4),
+                0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .generate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .generate-btn:hover::before {
+            left: 100%;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 20px 45px rgba(102, 126, 234, 0.5),
+                0 10px 25px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #5a67d8, #6b46c1);
+        }
+
+        .generate-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.8;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 12px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .footer-text {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .keyboard-hint {
+            font-size: 0.9rem;
+            color: #9ca3af;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .keyboard-hint kbd {
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-weight: 600;
+            color: #374151;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-card {
+                padding: 50px 30px;
+                margin: 10px;
+            }
+
+            .main-title {
+                font-size: 2.8rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .compliment-text {
+                font-size: 1.2rem;
+            }
+
+            .generate-btn {
+                padding: 20px 40px;
+                font-size: 1.1rem;
+            }
+
+            .floating-element {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-card {
+                padding: 40px 25px;
+            }
+
+            .main-title {
+                font-size: 2.2rem;
+            }
+
+            .compliment-display {
+                padding: 25px;
+                min-height: 140px;
+            }
+
+            .compliment-text {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-card">
+            <!-- Floating decorative elements -->
+            <div class="floating-element">✨</div>
+            <div class="floating-element">💫</div>
+            <div class="floating-element">🌟</div>
+            <div class="floating-element">💖</div>
+            <div class="floating-element">🎈</div>
+            <div class="floating-element">🌈</div>
+
+            <!-- Header Section -->
+            <div class="header">
+                <h1 class="main-title">Compliment Generator</h1>
+                <p class="subtitle">Spread positivity, one compliment at a time</p>
+                <p class="description">
+                    Everyone deserves to hear something wonderful about themselves. 
+                    Let our generator brighten your day with genuine, heartfelt compliments.
+                </p>
+            </div>
+
+            <!-- Compliment Display Section -->
+            <div class="compliment-section">
+                <div class="compliment-display">
+                    <p id="complimentText" class="compliment-text fade-in">
+                        Click the button below to receive your personalized compliment!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Button Section -->
+            <div class="button-section">
+                <button id="generateBtn" class="generate-btn">
+                    ✨ Generate New Compliment ✨
+                </button>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="footer">
+                <p class="footer-text">Share the positivity and brighten someone's day! 💫</p>
+                <div class="keyboard-hint">
+                    💡 Pro tip: Press <kbd>SPACE</kbd> to generate compliments quickly!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced compliments array - all neutral and universally applicable
+        const compliments = [
+            "You have an amazing ability to make others feel valued and heard.",
+            "Your creativity inspires everyone around you.",
+            "You bring out the best in people with your kindness.",
+            "Your sense of humor can brighten anyone's day.",
+            "You have a wonderful way of seeing the good in every situation.",
+            "Your determination is truly admirable.",
+            "You make the world a better place just by being in it.",
+            "Your empathy and understanding are gifts to those around you.",
+            "You have an incredible talent for making complex things seem simple.",
+            "Your positive energy is absolutely contagious.",
+            "You're the kind of person others feel lucky to know.",
+            "Your wisdom and insight always seem to come at just the right time.",
+            "You have a beautiful way of expressing yourself.",
+            "Your courage to be authentically yourself is inspiring.",
+            "You bring such warmth and joy to every room you enter.",
+            "Your thoughtfulness never goes unnoticed.",
+            "You have an amazing ability to find solutions where others see problems.",
+            "Your genuine care for others shines through in everything you do.",
+            "You're incredibly talented at making people feel comfortable and welcome.",
+            "Your passion for life is absolutely infectious.",
+            "You have such a unique and wonderful perspective on the world.",
+            "Your resilience in facing challenges is truly remarkable.",
+            "You're a natural at bringing people together.",
+            "Your intelligence is matched only by your kindness.",
+            "You have an extraordinary gift for making ordinary moments special.",
+            "Your confidence inspires others to believe in themselves too.",
+            "You're incredibly good at seeing the potential in people and situations.",
+            "Your generosity of spirit is a rare and beautiful thing.",
+            "You have a wonderful ability to make others laugh and feel at ease.",
+            "Your dedication to growing and learning is truly admirable.",
+            "Your presence turns any room into a place of comfort and joy.",
+            "You inspire people to believe in their dreams.",
+            "You're the kind of person who makes everything better just by showing up.",
+            "You have a natural charm that puts others at ease.",
+            "You're great at bringing out the best in every situation.",
+            "You spread positivity without even trying.",
+            "You're deeply appreciated more than you know.",
+            "You turn obstacles into opportunities.",
+            "You have a rare mix of humility and brilliance.",
+            "You make people feel like they matter — because they do.",
+            "You're someone people can always count on.",
+            "You've got a heart as big as your dreams.",
+            "You handle challenges with grace and strength.",
+            "You're a magnet for good vibes.",
+            "You make growth feel exciting and worth chasing.",
+            "You bring calm to chaos like no one else can.",
+            "You've got the kind of courage that changes lives.",
+            "You have an eye for beauty in the unexpected.",
+            "You're a source of wisdom and peace.",
+            "You always find the right words to uplift others.",
+            "Your light shines even on cloudy days.",
+            "You're a walking reminder that kindness matters.",
+            "You make others feel safe to be themselves.",
+            "You see the good in people and help them see it too.",
+            "You make ordinary conversations feel extraordinary.",
+            "Your strength is quiet, but undeniable.",
+            "You inspire greatness by simply being you.",
+            "You help others see their true worth.",
+            "Your energy brings life into any space.",
+            "You make people feel like they belong.",
+            "You've got an amazing sense of timing and intuition.",
+            "You uplift everyone in your orbit.",
+            "You make being kind look so easy.",
+            "Your perspective is refreshing and needed.",
+            "You carry joy with you and it's contagious.",
+            "You're a true original — and it shows.",
+            "You build others up without even realizing it.",
+            "You're always growing, and it's beautiful to witness.",
+            "Your authenticity lights the way for others.",
+            "You make people feel heard and valued.",
+            "You have a unique way of seeing beauty in everything.",
+            "You're a safe place in a chaotic world.",
+            "You create joy wherever you go.",
+            "You speak with wisdom far beyond your years.",
+            "You show up — and that means everything.",
+            "You give without expecting anything in return.",
+            "Your dreams are powerful, and your actions are louder.",
+            "You're a quiet storm of love and strength.",
+            "You inspire hope just by being yourself.",
+            "You're a light in the lives of so many people.",
+            "You help people become the version of themselves they admire.",
+            "Your thoughtfulness turns little things into big things.",
+            "You never underestimate the power of a kind word.",
+            "You make hard times feel a little softer.",
+            "Your encouragement can change someone's entire day.",
+            "You're constantly evolving and it's inspiring to witness.",
+            "You give off main character energy — in the best way.",
+            "You treat others the way the world should be.",
+            "You've mastered the art of listening with your heart.",
+            "You remind people how amazing they really are.",
+            "You're like a walking affirmation to others.",
+            "You bring light even when you don't feel like you're shining.",
+            "You always leave people better than you found them.",
+            "Your love for others is a superpower.",
+            "You're someone others look up to — and with good reason.",
+            "Your kindness is as limitless as your potential.",
+            "You have a heart that makes the world feel less heavy.",
+            "You're the definition of grace under pressure.",
+            "Your words are thoughtful, wise, and healing.",
+            "You've got a vibe that's simply unmatched.",
+            "You're a masterpiece in motion — keep creating.",
+            "You don't just talk about compassion — you live it.",
+            "You're the kindest person in the room, always.",
+            "You're a beautiful reminder that goodness still exists.",
+            "You have the gift of making everyone feel important.",
+            "Your curiosity about the world is refreshing.",
+            "You approach life with such genuine enthusiasm.",
+            "You're incredibly skilled at finding common ground.",
+            "Your integrity shines through in everything you do.",
+            "You have a natural ability to inspire trust.",
+            "You have such a thoughtful way of approaching problems.",
+            "Your open-mindedness makes conversations so much richer.",
+            "You're wonderfully authentic in how you express yourself.",
+            "You have an incredible ability to stay calm under pressure.",
+            "Your dedication to your values is truly inspiring.",
+            "You're remarkably good at making others feel included.",
+            "Your creativity finds ways to surprise and delight people.",
+            "You have a gift for asking the right questions at the right time.",
+            "Your patience with others is a beautiful quality.",
+            "You're incredibly thoughtful about how your actions affect others.",
+            "Your ability to adapt to new situations is impressive.",
+            "You have such a genuine way of connecting with people.",
+            "Your commitment to personal growth is admirable.",
+            "You're excellent at finding the silver lining in difficult situations.",
+            "Your willingness to help others without being asked is remarkable.",
+            "You have a natural talent for bringing out people's best qualities.",
+            "Your honesty is refreshing and deeply appreciated.",
+            "You're incredibly good at making people feel comfortable being vulnerable.",
+            "Your sense of justice and fairness guides you beautifully.",
+            "You have an amazing ability to stay true to yourself.",
+            "Your capacity for forgiveness shows incredible strength.",
+            "You're wonderfully skilled at celebrating others' successes.",
+            "Your ability to learn from mistakes is inspiring.",
+            "You have such a balanced perspective on life.",
+            "Your willingness to listen without judgment is a rare gift.",
+            "You're incredibly brave in how you face uncertainty.",
+            "Your sense of humor helps others see the lighter side of things.",
+            "You have a natural talent for making people feel valued.",
+            "Your emotional intelligence is truly remarkable.",
+            "You're exceptionally good at finding peaceful solutions to conflicts.",
+            "Your enthusiasm is genuinely inspiring to be around.",
+            "You have an incredible ability to stay focused on what matters most.",
+            "Your compassion extends to everyone you meet.",
+            "You're remarkably skilled at turning ideas into action.",
+            "Your consistency in being a good person is noticed and appreciated.",
+            "You have a wonderful way of making learning feel exciting.",
+            "Your ability to stay grounded while dreaming big is admirable.",
+            "You're incredibly thoughtful about the impact of your words.",
+            "Your resilience in bouncing back from setbacks is inspiring.",
+            "You have a natural gift for making complex situations feel manageable.",
+            "Your willingness to stand up for what's right takes real courage.",
+            "You're exceptionally good at finding beauty in everyday moments.",
+            "Your ability to remain optimistic while being realistic is remarkable.",
+            "You have such a genuine interest in other people's wellbeing.",
+            "Your creativity in problem-solving always impresses others.",
+            "You're wonderfully skilled at making everyone feel like they belong.",
+            "Your dedication to continuous improvement is truly admirable.",
+            "You have an amazing ability to find meaning in difficult experiences.",
+            "Your kindness extends naturally to everyone around you.",
+            "You're incredibly good at maintaining your principles under pressure.",
+            "Your ability to see multiple perspectives enriches every conversation.",
+            "You have a natural talent for bringing calm to stressful situations.",
+            "Your genuine curiosity about life makes you fascinating to talk to.",
+            "You're remarkably skilled at helping others feel confident.",
+            "Your emotional strength helps others feel more secure.",
+            "You have an incredible gift for timing your support perfectly.",
+            "Your ability to find joy in simple things is contagious.",
+            "You're wonderfully consistent in showing up for the people you care about.",
+            "Your wisdom seems to come from a deep understanding of life.",
+            "You have such a graceful way of handling disagreements.",
+            "Your ability to stay curious instead of judgmental is remarkable.",
+            "You're incredibly good at helping others see their own potential.",
+            "Your genuine appreciation for others brightens their day.",
+            "You have a natural ability to make difficult conversations easier.",
+            "Your commitment to treating everyone with respect is beautiful.",
+            "You're exceptionally skilled at finding the right balance in life.",
+            "Your ability to remain humble while achieving great things is inspiring.",
+            "You have an amazing talent for making others feel heard and understood.",
+            "Your approach to challenges shows incredible maturity.",
+            "You're wonderfully gifted at creating positive atmospheres.",
+            "Your ability to learn and grow from every experience is admirable.",
+            "You have such a genuine way of expressing gratitude.",
+            "Your strength of character shows in everything you do.",
+            "You're incredibly thoughtful about making others feel comfortable.",
+            "Your ability to stay present in conversations is a rare gift.",
+            "You have a natural talent for helping others feel less alone.",
+            "Your commitment to personal integrity is deeply inspiring.",
+            "You're remarkably good at finding hope in challenging situations.",
+            "Your emotional generosity makes everyone around you feel richer.",
+            "You have an incredible ability to stay true to your values.",
+            "Your willingness to be vulnerable when appropriate shows real courage.",
+            "You're wonderfully skilled at helping others process their thoughts.",
+            "Your ability to remain patient when others are struggling is beautiful.",
+            "You have a natural gift for making others feel more confident.",
+            "Your consistency in being a positive force is truly appreciated.",
+            "You're incredibly good at finding the lessons in every situation.",
+            "Your genuine interest in growth and learning is inspiring.",
+            "You have such a thoughtful approach to relationships.",
+            "Your ability to stay centered during chaos helps everyone around you.",
+            "You're remarkably skilled at seeing the humanity in everyone.",
+            "Your natural wisdom guides you to make thoughtful decisions.",
+            "You have an amazing ability to help others feel more hopeful about the future."
+        ];
+
+        // Global variables
+        let complimentCount = 0;
+        let isGenerating = false;
+        let usedCompliments = [];
+
+        // DOM elements
+        const complimentTextEl = document.getElementById('complimentText');
+        const generateBtnEl = document.getElementById('generateBtn');
+
+        // Update button state
+        function updateButton(loading) {
+            if (loading) {
+                generateBtnEl.innerHTML = '<div class="loading-spinner"></div>Generating magic...';
+                generateBtnEl.disabled = true;
+            } else {
+                generateBtnEl.innerHTML = '✨ Generate New Compliment ✨';
+                generateBtnEl.disabled = false;
+            }
+        }
+
+        // Get random compliment (avoiding recent repeats)
+        function getRandomCompliment() {
+            let availableCompliments = compliments.filter(function(compliment) {
+                return usedCompliments.indexOf(compliment) === -1;
+            });
+
+            // Reset used compliments if all have been used
+            if (availableCompliments.length === 0) {
+                usedCompliments = [];
+                availableCompliments = compliments.slice();
+            }
+
+            const randomIndex = Math.floor(Math.random() * availableCompliments.length);
+            const selectedCompliment = availableCompliments[randomIndex];
+            
+            // Add to used compliments (keep last 15 to avoid repetition in larger pool)
+            usedCompliments.push(selectedCompliment);
+            if (usedCompliments.length > 15) {
+                usedCompliments.shift();
+            }
+
+            return selectedCompliment;
+        }
+
+        // Generate compliment function
+        function generateCompliment() {
+            if (isGenerating) return;
+            
+            isGenerating = true;
+            updateButton(true);
+            
+            // Fade out current compliment
+            complimentTextEl.classList.remove('fade-in');
+            complimentTextEl.classList.add('fade-out');
+            
+            setTimeout(function() {
+                // Get new compliment
+                const newCompliment = getRandomCompliment();
+                
+                // Update text and fade in
+                complimentTextEl.textContent = newCompliment;
+                complimentTextEl.classList.remove('fade-out');
+                complimentTextEl.classList.add('fade-in');
+                
+                // Update counter with animation
+                complimentCount++;
+                
+                // Reset button
+                setTimeout(function() {
+                    updateButton(false);
+                    isGenerating = false;
+                }, 200);
+                
+            }, 400);
+        }
+
+        // Event listeners
+        generateBtnEl.addEventListener('click', generateCompliment);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if ((e.code === 'Space' || e.key === ' ') && !isGenerating) {
+                e.preventDefault();
+                generateCompliment();
+            }
+        });
+
+        // Add entrance animation
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'translateY(20px)';
+            document.body.style.transition = 'all 0.6s ease';
+            
+            setTimeout(function() {
+                document.body.style.opacity = '1';
+                document.body.style.transform = 'translateY(0)';
+            }, 100);
+        });
+
+        // Add subtle interaction feedback
+        generateBtnEl.addEventListener('mouseenter', function() {
+            if (!isGenerating) {
+                this.style.transform = 'translateY(-3px) scale(1.02)';
+            }
+        });
+
+        generateBtnEl.addEventListener('mouseleave', function() {
+            if (!isGenerating) {
+                this.style.transform = 'translateY(0) scale(1)';
+            }
+        });
+    </script>
+</body>
+</html>
