@@ -114,7 +114,6 @@ Contributions are welcome! If you have ideas for new compliments or improvements
 - ✅ Firefox (latest)
 - ✅ Safari (latest)
 - ✅ Edge (latest)
-- ✅ Mobile browsers
 
 ## 📄 License
 
